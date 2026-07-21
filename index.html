@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Savepro Investment Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+============================================================ */
+:root {
+  --navy-950: #04060f;
+  --navy-900: #070d1a;
+  --navy-800: #0d1730;
+  --navy-700: #111f3f;
+  --navy-600: #162547;
+  --navy-500: #1a2d5a;
+  --navy-400: #243766;
+  --gold-500: #c9a84c;
+  --gold-400: #d4b466;
+  --gold-300: #e0c97e;
+  --gold-200: #f0dfa8;
+  --gold-100: #faf3e0;
+  --gold-glow: rgba(201,168,76,0.18);
+  --gold-glow-strong: rgba(201,168,76,0.35);
+  --glass-bg: rgba(13,23,48,0.72);
+  --glass-border: rgba(201,168,76,0.14);
+  --glass-border-hover: rgba(201,168,76,0.32);
+  --text-primary: #f0ece4;
+  --text-secondary: #9ba8c0;
+  --text-muted: #5c6880;
+  --text-gold: #d4b466;
+  --success: #22c97a;
+  --error: #f05c5c;
+  --warning: #f0a742;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --shadow-glass: 0 8px 40px rgba(0,0,0,0.45), 0 1px 0 rgba(201,168,76,0.08) inset;
+  --shadow-gold: 0 0 30px rgba(201,168,76,0.12);
+  --transition-fast: 0.18s cubic-bezier(0.4,0,0.2,1);
+  --transition-med: 0.32s cubic-bezier(0.4,0,0.2,1);
+  --transition-slow: 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy-950);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   BACKGROUND ATMOSPHERE
+============================================================ */
+.bg-atmosphere {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.glow-orb {
+  position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.12;
+  animation: orb-float 12s ease-in-out infinite;
+}
+.glow-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, #c9a84c 0%, transparent 70%);
+  top: -200px; left: -100px;
+  animation-delay: 0s;
+}
+.glow-orb-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #1a4db5 0%, transparent 70%);
+  top: 30%; right: -150px; opacity: 0.1;
+  animation-delay: -4s;
+}
+.glow-orb-3 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #c9a84c 0%, transparent 70%);
+  bottom: 10%; left: 40%; opacity: 0.08;
+  animation-delay: -8s;
+}
+@keyframes orb-float {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(30px,-40px) scale(1.05); }
+  66% { transform: translate(-20px,25px) scale(0.97); }
+}
+
+/* ============================================================
+   PROGRESS BAR — STICKY TOP
+============================================================ */
+#progress-bar-wrap {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+}
+#progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #c9a84c, #f0dfa8, #c9a84c);
+  background-size: 200% 100%;
+  width: 0%;
+  transition: width var(--transition-med);
+  animation: shimmer-bar 2.5s linear infinite;
+  box-shadow: 0 0 12px rgba(201,168,76,0.7);
+}
+@keyframes shimmer-bar {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+.navbar {
+  position: sticky; top: 3px; z-index: 900;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  height: 68px;
+  background: rgba(7,13,26,0.88);
+  backdrop-filter: blur(24px) saturate(1.5);
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, #c9a84c 0%, #f0dfa8 60%, #c9a84c 100%);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px; color: var(--navy-900);
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(201,168,76,0.4);
+  flex-shrink: 0;
+}
+.nav-brand {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+.nav-brand span { color: var(--gold-400); }
+.nav-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  background: var(--gold-glow);
+  border: 1px solid rgba(201,168,76,0.22);
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gold-300);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.nav-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--gold-400);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--gold-400);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(0.8); }
+}
+
+/* ============================================================
+   STEP INDICATOR BAR
+============================================================ */
+.step-indicator {
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px 32px 0;
+  gap: 0;
+  position: relative; z-index: 1;
+  flex-wrap: wrap;
+}
+.step-item {
+  display: flex; align-items: center;
+  flex: 1; min-width: 0;
+}
+.step-dot-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.step-dot {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 700;
+  border: 2px solid var(--text-muted);
+  color: var(--text-muted);
+  background: transparent;
+  transition: var(--transition-med);
+  position: relative; z-index: 1;
+  flex-shrink: 0;
+}
+.step-dot.active {
+  border-color: var(--gold-500);
+  background: var(--gold-glow);
+  color: var(--gold-300);
+  box-shadow: 0 0 16px rgba(201,168,76,0.35);
+}
+.step-dot.done {
+  border-color: var(--gold-500);
+  background: linear-gradient(135deg, #c9a84c, #f0dfa8);
+  color: var(--navy-900);
+}
+.step-label {
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--text-muted);
+  white-space: nowrap; max-width: 80px; text-align: center;
+  transition: var(--transition-fast);
+}
+.step-item.active .step-label, .step-item.done .step-label { color: var(--gold-300); }
+.step-connector {
+  flex: 1; height: 2px;
+  background: var(--text-muted);
+  margin: 0 4px; margin-bottom: 22px;
+  transition: var(--transition-med);
+  min-width: 12px;
+}
+.step-connector.done { background: var(--gold-500); }
+
+/* ============================================================
+   MAIN CONTAINER
+============================================================ */
+.app-wrap {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ============================================================
+   SECTION CARDS
+============================================================ */
+.section-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 36px 40px;
+  margin-top: 28px;
+  box-shadow: var(--shadow-glass);
+  transition: border-color var(--transition-med);
+  display: none;
+  opacity: 0;
+  transform: translateY(24px);
+}
+.section-card.visible {
+  display: block;
+  animation: section-reveal 0.45s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes section-reveal {
+  from { opacity:0; transform:translateY(24px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.section-card:hover { border-color: rgba(201,168,76,0.2); }
+.section-header {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+}
+.section-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--gold-glow);
+  border: 1px solid rgba(201,168,76,0.22);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.45rem; color: var(--text-primary);
+  line-height: 1.2;
+}
+.section-subtitle { font-size: 0.82rem; color: var(--text-secondary); margin-top: 2px; }
+
+/* ============================================================
+   FORM ELEMENTS
+============================================================ */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid.single { grid-template-columns: 1fr; }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+.form-group { display: flex; flex-direction: column; gap: 7px; }
+.form-label {
+  font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-gold);
+}
+.form-label .req { color: var(--error); margin-left: 2px; }
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: rgba(7,13,26,0.6);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: var(--radius-md);
+  padding: 13px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+  appearance: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--gold-400);
+  background: rgba(7,13,26,0.8);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12), 0 0 20px rgba(201,168,76,0.08);
+}
+.form-input::placeholder { color: var(--text-muted); }
+.form-select { cursor: pointer; }
+.form-select option { background: var(--navy-800); color: var(--text-primary); }
+.form-textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+.form-textarea::placeholder { color: var(--text-muted); }
+.form-input.error, .form-select.error, .form-textarea.error {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(240,92,92,0.12);
+  animation: shake 0.38s cubic-bezier(0.36,0.07,0.19,0.97);
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+.form-error {
+  font-size: 0.74rem; color: var(--error); display: none;
+  animation: fadeIn 0.2s ease;
+}
+.form-error.show { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)} }
+
+.char-counter {
+  font-size: 0.7rem; color: var(--text-muted);
+  text-align: right; transition: color var(--transition-fast);
+}
+.char-counter.warn { color: var(--warning); }
+.char-counter.over { color: var(--error); }
+
+.animated-field {
+  display: none; overflow: hidden;
+  animation: field-expand 0.28s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.animated-field.show {
+  display: block;
+}
+@keyframes field-expand {
+  from { opacity:0; transform:translateY(-8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* ============================================================
+   SELECT WRAPPER (custom arrow)
+============================================================ */
+.select-wrap {
+  position: relative;
+}
+.select-wrap::after {
+  content: '';
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--gold-400);
+  pointer-events: none;
+}
+
+/* ============================================================
+   INVESTMENT TYPE CARDS
+============================================================ */
+.inv-type-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+@media (max-width: 600px) { .inv-type-grid { grid-template-columns: 1fr; } }
+
+.inv-type-card {
+  position: relative; overflow: hidden;
+  background: rgba(7,13,26,0.5);
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: var(--radius-lg);
+  padding: 26px 20px;
+  cursor: pointer; text-align: center;
+  transition: border-color var(--transition-med), box-shadow var(--transition-med), transform var(--transition-med), background var(--transition-med);
+  user-select: none;
+}
+.inv-type-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 65%);
+  opacity: 0; transition: opacity var(--transition-med);
+}
+.inv-type-card:hover {
+  border-color: rgba(201,168,76,0.3);
+  box-shadow: 0 8px 32px rgba(201,168,76,0.1);
+  transform: translateY(-2px);
+}
+.inv-type-card:hover::before { opacity: 1; }
+.inv-type-card.selected {
+  border-color: var(--gold-500);
+  background: rgba(201,168,76,0.07);
+  box-shadow: 0 0 0 1px var(--gold-500), 0 8px 40px rgba(201,168,76,0.18);
+  transform: translateY(-3px);
+}
+.inv-type-card.selected::before { opacity: 1; }
+.inv-card-icon {
+  font-size: 2.2rem; margin-bottom: 12px;
+  filter: grayscale(0.3);
+  transition: transform var(--transition-med), filter var(--transition-med);
+}
+.inv-type-card:hover .inv-card-icon,
+.inv-type-card.selected .inv-card-icon {
+  transform: scale(1.1);
+  filter: none;
+}
+.inv-card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem; color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.inv-card-desc { font-size: 0.76rem; color: var(--text-secondary); line-height: 1.4; }
+.inv-type-card.selected .inv-card-title { color: var(--gold-300); }
+.inv-check {
+  position: absolute; top: 10px; right: 10px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: linear-gradient(135deg,#c9a84c,#f0dfa8);
+  display: none; align-items: center; justify-content: center;
+  font-size: 0.6rem; color: var(--navy-900); font-weight: 900;
+}
+.inv-type-card.selected .inv-check { display: flex; }
+
+/* ============================================================
+   FUND ENTRIES
+============================================================ */
+.fund-entries-wrap { display: flex; flex-direction: column; gap: 20px; }
+
+.fund-card {
+  background: rgba(4,6,15,0.55);
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  animation: section-reveal 0.35s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.fund-card:hover { border-color: rgba(201,168,76,0.22); box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+
+.fund-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 22px;
+  background: rgba(201,168,76,0.05);
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+}
+.fund-card-num {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold-400);
+}
+.fund-mode-badge {
+  font-size: 0.67rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 3px 10px; border-radius: 100px;
+  background: rgba(201,168,76,0.12); color: var(--gold-300);
+  border: 1px solid rgba(201,168,76,0.2);
+}
+.fund-remove-btn {
+  background: rgba(240,92,92,0.1); border: 1px solid rgba(240,92,92,0.2);
+  border-radius: 8px; color: var(--error); padding: 5px 10px;
+  font-size: 0.72rem; cursor: pointer; font-weight: 600;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.fund-remove-btn:hover { background: rgba(240,92,92,0.2); transform: scale(1.05); }
+
+.fund-card-body { padding: 22px; }
+
+/* Transaction mode chips */
+.mode-chips-wrap {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+}
+.mode-chip {
+  padding: 6px 14px; border-radius: 100px; cursor: pointer;
+  font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em;
+  border: 1px solid rgba(201,168,76,0.15);
+  background: rgba(7,13,26,0.6); color: var(--text-secondary);
+  transition: all var(--transition-fast); user-select: none;
+}
+.mode-chip:hover { border-color: rgba(201,168,76,0.35); color: var(--text-primary); background: rgba(201,168,76,0.07); }
+.mode-chip.selected {
+  background: linear-gradient(135deg, rgba(201,168,76,0.25), rgba(240,223,168,0.15));
+  border-color: var(--gold-500); color: var(--gold-200);
+  box-shadow: 0 0 12px rgba(201,168,76,0.15);
+}
+
+/* Goal chips & why fund chips */
+.multi-chips-wrap {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.multi-chip {
+  padding: 6px 14px; border-radius: 100px; cursor: pointer;
+  font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(7,13,26,0.6); color: var(--text-secondary);
+  transition: all var(--transition-fast); user-select: none;
+}
+.multi-chip:hover { border-color: rgba(201,168,76,0.25); color: var(--text-primary); }
+.multi-chip.selected {
+  background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.4);
+  color: var(--gold-200);
+}
+.multi-chip.none-chip.selected {
+  background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15);
+  color: var(--text-secondary);
+}
+
+/* Add fund button */
+.add-fund-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 16px;
+  background: rgba(201,168,76,0.06);
+  border: 1px dashed rgba(201,168,76,0.25);
+  border-radius: var(--radius-lg);
+  color: var(--gold-400); font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem; font-weight: 600;
+  cursor: pointer; margin-top: 8px;
+  transition: all var(--transition-fast);
+}
+.add-fund-btn:hover {
+  background: rgba(201,168,76,0.11);
+  border-color: rgba(201,168,76,0.45);
+  box-shadow: 0 0 20px rgba(201,168,76,0.1);
+}
+.add-fund-btn svg { transition: transform var(--transition-fast); }
+.add-fund-btn:hover svg { transform: rotate(90deg); }
+
+/* ============================================================
+   SEARCHABLE DROPDOWN
+============================================================ */
+.searchable-dd-wrap { position: relative; }
+.searchable-dd-input-wrap { position: relative; }
+.searchable-dd-trigger {
+  width: 100%;
+  background: rgba(7,13,26,0.6);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: var(--radius-md);
+  padding: 13px 40px 13px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem; color: var(--text-primary);
+  outline: none; cursor: pointer; text-align: left;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.searchable-dd-trigger.placeholder { color: var(--text-muted); }
+.searchable-dd-trigger:focus, .searchable-dd-trigger.open {
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+}
+.dd-arrow {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--gold-400);
+  pointer-events: none;
+  transition: transform var(--transition-fast);
+}
+.searchable-dd-trigger.open ~ .dd-arrow { transform: translateY(-50%) rotate(180deg); }
+
+.searchable-dd-panel {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: var(--navy-800);
+  border: 1px solid rgba(201,168,76,0.22);
+  border-radius: var(--radius-md);
+  z-index: 500; overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.08) inset;
+  display: none;
+  animation: dd-open 0.2s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.searchable-dd-panel.open { display: block; }
+@keyframes dd-open {
+  from { opacity:0; transform:translateY(-8px) scaleY(0.95); }
+  to { opacity:1; transform:translateY(0) scaleY(1); }
+}
+.dd-search-box {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+}
+.dd-search-input {
+  width: 100%; background: rgba(4,6,15,0.6);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 8px; padding: 8px 12px;
+  font-family: 'DM Sans',sans-serif; font-size: 0.86rem;
+  color: var(--text-primary); outline: none;
+}
+.dd-search-input:focus { border-color: var(--gold-400); }
+.dd-search-input::placeholder { color: var(--text-muted); }
+.dd-list {
+  max-height: 220px; overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.dd-list::-webkit-scrollbar { width: 4px; }
+.dd-list::-webkit-scrollbar-track { background: transparent; }
+.dd-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 4px; }
+.dd-item {
+  padding: 10px 16px; font-size: 0.85rem; color: var(--text-secondary);
+  cursor: pointer; transition: background var(--transition-fast), color var(--transition-fast);
+  display: flex; align-items: center; gap: 8px;
+}
+.dd-item:hover, .dd-item.focused { background: rgba(201,168,76,0.08); color: var(--text-primary); }
+.dd-item.selected { color: var(--gold-300); }
+.dd-item .highlight { color: var(--gold-400); font-weight: 700; }
+.dd-item-cat {
+  padding: 6px 16px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-muted);
+  background: rgba(255,255,255,0.02);
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.dd-empty {
+  padding: 18px 16px; text-align: center;
+  font-size: 0.83rem; color: var(--text-muted);
+}
+
+/* ============================================================
+   NAVIGATION BUTTONS
+============================================================ */
+.section-nav {
+  display: flex; gap: 14px; justify-content: flex-end;
+  margin-top: 28px; padding-top: 22px;
+  border-top: 1px solid rgba(201,168,76,0.08);
+}
+.btn {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; border-radius: var(--radius-md);
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  cursor: pointer; border: none; outline: none;
+  transition: all var(--transition-fast); user-select: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #c9a84c 0%, #f0dfa8 60%, #c9a84c 100%);
+  background-size: 200% 100%;
+  color: var(--navy-900);
+  box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+}
+.btn-primary:hover {
+  background-position: 100% 0;
+  box-shadow: 0 6px 28px rgba(201,168,76,0.45);
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.22);
+  color: var(--gold-300);
+}
+.btn-secondary:hover {
+  background: rgba(201,168,76,0.14);
+  border-color: rgba(201,168,76,0.4);
+}
+.btn-danger {
+  background: rgba(240,92,92,0.1);
+  border: 1px solid rgba(240,92,92,0.25);
+  color: var(--error);
+}
+.btn .ripple {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transform: scale(0); animation: ripple 0.55s linear;
+  pointer-events: none;
+}
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+.btn:disabled {
+  opacity: 0.5; cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ============================================================
+   REVIEW SECTION
+============================================================ */
+.review-block {
+  background: rgba(4,6,15,0.5);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  margin-bottom: 18px;
+}
+.review-block-title {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold-400);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.review-block-title::after {
+  content: ''; flex: 1; height: 1px;
+  background: rgba(201,168,76,0.12);
+}
+.review-row {
+  display: flex; align-items: flex-start;
+  gap: 16px; padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.review-row:last-child { border-bottom: none; }
+.review-key {
+  font-size: 0.76rem; font-weight: 600; color: var(--text-muted);
+  min-width: 160px; flex-shrink: 0;
+}
+.review-val { font-size: 0.86rem; color: var(--text-primary); flex: 1; }
+.review-val.gold { color: var(--gold-300); }
+
+.fund-review-card {
+  background: rgba(201,168,76,0.04);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: var(--radius-md);
+  padding: 18px 20px; margin-bottom: 14px;
+}
+.fund-review-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.fund-review-num {
+  font-size: 0.66rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(201,168,76,0.12);
+  color: var(--gold-300); padding: 3px 10px;
+  border-radius: 100px;
+}
+
+/* Advisory Reasoning card */
+.reasoning-card {
+  background: linear-gradient(135deg, rgba(201,168,76,0.07), rgba(240,223,168,0.04));
+  border: 1px solid rgba(201,168,76,0.22);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px; margin-top: 20px;
+  position: relative; overflow: hidden;
+}
+.reasoning-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+}
+.reasoning-card-title {
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gold-400);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.reasoning-card-title svg { flex-shrink: 0; }
+.reasoning-text { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.75; }
+.reasoning-fund-item {
+  border-left: 2px solid rgba(201,168,76,0.3);
+  padding-left: 14px; margin-bottom: 12px;
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+============================================================ */
+#toast-container {
+  position: fixed; bottom: 28px; right: 28px;
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 9999; pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; border-radius: var(--radius-md);
+  min-width: 280px; max-width: 380px;
+  background: var(--navy-800);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  pointer-events: all;
+  animation: toast-in 0.35s cubic-bezier(0.22,1,0.36,1) forwards;
+  border-left: 3px solid var(--gold-500);
+}
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--error); }
+.toast.warning { border-left-color: var(--warning); }
+.toast-icon { font-size: 1.1rem; flex-shrink: 0; }
+.toast-msg { font-size: 0.83rem; color: var(--text-primary); flex: 1; }
+.toast.out { animation: toast-out 0.3s ease forwards; }
+@keyframes toast-in {
+  from { opacity:0; transform:translateX(40px) scale(0.95); }
+  to { opacity:1; transform:translateX(0) scale(1); }
+}
+@keyframes toast-out {
+  from { opacity:1; transform:translateX(0); }
+  to { opacity:0; transform:translateX(40px); }
+}
+
+/* ============================================================
+   LOADING SPINNER
+============================================================ */
+.spinner-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(4,6,15,0.8); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  flex-direction: column; gap: 18px;
+}
+.spinner-overlay.show { display: flex; }
+.spinner {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 3px solid rgba(201,168,76,0.15);
+  border-top-color: var(--gold-500);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner-text { font-size: 0.85rem; color: var(--text-secondary); letter-spacing: 0.05em; }
+
+/* ============================================================
+   SUCCESS STATE
+============================================================ */
+.success-wrap {
+  text-align: center; padding: 40px 20px;
+  display: none;
+}
+.success-wrap.show { display: block; }
+.success-icon {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(34,201,122,0.2), rgba(34,201,122,0.05));
+  border: 2px solid rgba(34,201,122,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; margin: 0 auto 20px;
+  animation: success-pop 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes success-pop {
+  from { transform:scale(0.5); opacity:0; }
+  to { transform:scale(1); opacity:1; }
+}
+.success-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem; color: var(--text-primary); margin-bottom: 10px;
+}
+.success-sub { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 28px; }
+
+/* ============================================================
+   MISC
+============================================================ */
+.divider {
+  height: 1px; background: rgba(201,168,76,0.1);
+  margin: 24px 0;
+}
+.info-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 100px;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.15);
+  font-size: 0.72rem; color: var(--gold-300); font-weight: 600;
+}
+.fund-fields-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+@media (max-width: 600px) { .fund-fields-grid { grid-template-columns: 1fr; } }
+
+.section-empty {
+  text-align: center; padding: 30px 20px;
+  color: var(--text-muted); font-size: 0.85rem;
+}
+
+/* Amount input wrapper */
+.amount-wrap { position: relative; }
+.amount-prefix {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 0.9rem; color: var(--gold-400); font-weight: 700;
+  pointer-events: none;
+}
+.amount-wrap .form-input { padding-left: 30px; }
+
+.tag-list {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.tag {
+  font-size: 0.73rem; padding: 3px 10px;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.18);
+  border-radius: 100px; color: var(--gold-200);
+}
+
+/* Page hero */
+.page-hero {
+  text-align: center; padding: 36px 20px 12px;
+  position: relative; z-index: 1;
+}
+.page-hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  background: linear-gradient(135deg, #f0dfa8 0%, #c9a84c 60%, #f0dfa8 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2; margin-bottom: 10px;
+}
+.page-hero-sub { font-size: 0.9rem; color: var(--text-secondary); }
+
+/* Section separator label */
+.section-sep {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-muted);
+  margin: 20px 0 8px;
+}
+.section-sep::before, .section-sep::after {
+  content: ''; flex: 1; height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+
+/* Ripple */
+.btn { position: relative; overflow: hidden; }
+</style>
+</head>
+<body>
+
+<!-- Background atmosphere -->
+<div class="bg-atmosphere">
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
+</div>
+
+<!-- Progress bar -->
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">SP</div>
+    <span class="nav-brand">Savepro <span>Investment</span></span>
+  </a>
+  <div class="nav-badge">Proposal Builder made by Suraj</div>
+</nav>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Spinner -->
+<div class="spinner-overlay" id="spinner">
+  <div class="spinner"></div>
+  <div class="spinner-text">Submitting Proposal…</div>
+</div>
+
+<!-- Main app -->
+<div class="app-wrap">
+
+  <!-- Step indicator -->
+  <div class="step-indicator" id="step-indicator">
+    <!-- Dynamically rendered -->
+  </div>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <div class="page-hero-title">Investment Proposal Portal</div>
+    <div class="page-hero-sub">Institutional-grade proposal engineering for wealth management advisors</div>
+  </div>
+
+  <!-- SECTION 1 — CLIENT DETAILS -->
+  <div class="section-card visible" id="section-1">
+    <div class="section-header">
+      <div class="section-icon">👤</div>
+      <div>
+        <div class="section-title">Client Details</div>
+        <div class="section-subtitle">Primary client and advisor information</div>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Client Name <span class="req">*</span></label>
+        <input class="form-input" id="client-name" type="text" placeholder="Enter client full name" autocomplete="off"/>
+        <div class="form-error" id="err-client-name">Client name is required.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Advisor Name <span class="req">*</span></label>
+        <div class="select-wrap">
+          <select class="form-select" id="advisor-select">
+            <option value="">— Select Advisor —</option>
+            <option value="Vaibhav Jain (Boss)">Vaibhav Jain (Boss)</option>
+            <option value="Meeta Mam">Meeta Mam</option>
+            <option value="Vansh">Vansh</option>
+            <option value="Nihal">Nihal</option>
+            <option value="Suraj">Suraj</option>
+            <option value="Other">Other</option>
+            <option value="None">None</option>
+          </select>
+        </div>
+        <div class="form-error" id="err-advisor">Please select an advisor.</div>
+      </div>
+    </div>
+    <div class="animated-field" id="advisor-other-wrap" style="margin-top:16px">
+      <div class="form-group">
+        <label class="form-label">Please specify advisor <span class="req">*</span></label>
+        <input class="form-input" id="advisor-other" type="text" placeholder="Enter advisor name"/>
+        <div class="form-error" id="err-advisor-other">Please specify the advisor name.</div>
+      </div>
+    </div>
+    <div class="section-nav">
+      <button class="btn btn-primary" onclick="goNext(1)">
+        Continue <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- SECTION 2 — INVESTMENT TYPE -->
+  <div class="section-card" id="section-2">
+    <div class="section-header">
+      <div class="section-icon">📊</div>
+      <div>
+        <div class="section-title">Investment Type</div>
+        <div class="section-subtitle">Select the category of investment being proposed</div>
+      </div>
+    </div>
+    <div class="inv-type-grid">
+      <div class="inv-type-card" data-type="Equity" onclick="selectInvType(this,'Equity')">
+        <div class="inv-check">✓</div>
+        <div class="inv-card-icon">📈</div>
+        <div class="inv-card-title">Equity</div>
+        <div class="inv-card-desc">Direct stock market investments with growth-oriented strategies</div>
+      </div>
+      <div class="inv-type-card" data-type="Mutual Fund" onclick="selectInvType(this,'Mutual Fund')">
+        <div class="inv-check">✓</div>
+        <div class="inv-card-icon">🏦</div>
+        <div class="inv-card-title">Mutual Fund</div>
+        <div class="inv-card-desc">Professionally managed pooled investment vehicles</div>
+      </div>
+      <div class="inv-type-card" data-type="Equity + Mutual Fund" onclick="selectInvType(this,'Equity + Mutual Fund')">
+        <div class="inv-check">✓</div>
+        <div class="inv-card-icon">⚖️</div>
+        <div class="inv-card-title">Equity + MF</div>
+        <div class="inv-card-desc">Combined portfolio spanning direct equity and mutual funds</div>
+      </div>
+    </div>
+    <div class="form-error" id="err-inv-type" style="margin-top:14px">Please select an investment type.</div>
+    <div class="section-nav">
+      <button class="btn btn-secondary" onclick="goBack(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goNext(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3 — EQUITY DETAILS -->
+  <div class="section-card" id="section-3">
+    <div class="section-header">
+      <div class="section-icon">📈</div>
+      <div>
+        <div class="section-title">Equity Details</div>
+        <div class="section-subtitle">Equity investment amount and advisory notes</div>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Equity Amount <span class="req">*</span></label>
+        <div class="amount-wrap">
+          <span class="amount-prefix">₹</span>
+          <input class="form-input" id="equity-amount" type="number" min="0" placeholder="0.00"/>
+        </div>
+        <div class="form-error" id="err-equity-amount">Please enter the equity amount.</div>
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:18px">
+      <label class="form-label">Equity Notes</label>
+      <textarea class="form-textarea" id="equity-notes" placeholder="Add strategic notes, rationale or special instructions for this equity investment…" maxlength="600" oninput="updateCounter(this,'equity-notes-count',600)"></textarea>
+      <div class="char-counter" id="equity-notes-count">0 / 600</div>
+    </div>
+    <div class="section-nav">
+      <button class="btn btn-secondary" onclick="goBack(3)">← Back</button>
+      <button class="btn btn-primary" onclick="goNext(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 4 — MUTUAL FUND ENTRIES -->
+  <div class="section-card" id="section-4">
+    <div class="section-header">
+      <div class="section-icon">🏦</div>
+      <div>
+        <div class="section-title">Mutual Fund Entries</div>
+        <div class="section-subtitle">Build the complete fund transaction detail matrix</div>
+      </div>
+    </div>
+    <div class="fund-entries-wrap" id="fund-entries-wrap">
+      <!-- Fund cards injected here -->
+    </div>
+    <div class="section-empty" id="fund-empty-msg">No fund entries yet. Add your first fund entry below.</div>
+    <button class="add-fund-btn" onclick="addFundEntry()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+      Add Fund Entry
+    </button>
+    <div class="section-nav">
+      <button class="btn btn-secondary" onclick="goBack(4)">← Back</button>
+      <button class="btn btn-primary" onclick="goNext(4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 5 — NOTES & COMMENTS -->
+  <div class="section-card" id="section-5">
+    <div class="section-header">
+      <div class="section-icon">📝</div>
+      <div>
+        <div class="section-title">Notes & Comments</div>
+        <div class="section-subtitle">Overall proposal notes and advisor comments</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Proposal Notes</label>
+      <textarea class="form-textarea" id="proposal-notes" style="min-height:150px" placeholder="Enter overall proposal strategy, client conversation notes, compliance remarks or any additional advisory context…" maxlength="1200" oninput="updateCounter(this,'proposal-notes-count',1200)"></textarea>
+      <div class="char-counter" id="proposal-notes-count">0 / 1200</div>
+    </div>
+    <div class="section-nav">
+      <button class="btn btn-secondary" onclick="goBack(5)">← Back</button>
+      <button class="btn btn-primary" onclick="goNext(5)">Review Proposal →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 6 — REVIEW & SUBMIT -->
+  <div class="section-card" id="section-6">
+    <div class="section-header">
+      <div class="section-icon">✅</div>
+      <div>
+        <div class="section-title">Review & Submit</div>
+        <div class="section-subtitle">Final institutional review before proposal submission</div>
+      </div>
+    </div>
+    <!-- Review content injected here -->
+    <div id="review-content"></div>
+    <div class="section-nav">
+      <button class="btn btn-secondary" onclick="goBack(6)">← Back</button>
+      <button class="btn btn-primary" id="submit-btn" onclick="submitProposal()">
+        Submit Proposal
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+    <!-- Success state -->
+    <div class="success-wrap" id="success-wrap">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Proposal Submitted</div>
+      <div class="success-sub">Your investment proposal has been successfully submitted and logged.</div>
+      <button class="btn btn-primary" onclick="resetAll()">Create New Proposal</button>
+    </div>
+  </div>
+
+</div><!-- /app-wrap -->
+
+<script>
+/* ============================================================
+   GOOGLE SHEETS URL
+============================================================ */
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxXPm4WaWRaBaiKJJOjJYHVdkOCqz3T6HnT_uj8jH6bUM7VmYE78qBRVpvnmShmAqTKtA/exec";
+
+/* ============================================================
+   MUTUAL FUND DATABASE
+============================================================ */
+const FUND_DB = {
+  "SBI Mutual Fund": [
+    "SBI Bluechip Fund","SBI Large & Midcap Fund","SBI Focused Equity Fund","SBI Contra Fund",
+    "SBI Magnum Midcap Fund","SBI Small Cap Fund","SBI Flexicap Fund","SBI Equity Hybrid Fund",
+    "SBI Conservative Hybrid Fund","SBI Balanced Advantage Fund","SBI Arbitrage Opportunities Fund",
+    "SBI Overnight Fund","SBI Liquid Fund","SBI Short Term Debt Fund","SBI Corporate Bond Fund",
+    "SBI Dynamic Bond Fund","SBI Magnum Gilt Fund","SBI Banking & PSU Fund",
+    "SBI PSU Fund","SBI Healthcare Opportunities Fund","SBI Technology Opportunities Fund",
+    "SBI Infrastructure Fund","SBI ESG Exclusionary Strategy Fund","SBI Nifty 50 Index Fund",
+    "SBI Nifty Next 50 Index Fund","SBI S&P BSE Sensex Index Fund","SBI Consumption Opportunities Fund"
+  ],
+  "HDFC Mutual Fund": [
+    "HDFC Flexi Cap Fund","HDFC Large Cap Fund","HDFC Mid-Cap Opportunities Fund",
+    "HDFC Small Cap Fund","HDFC Top 100 Fund","HDFC Large and Mid Cap Fund",
+    "HDFC Balanced Advantage Fund","HDFC Hybrid Equity Fund","HDFC Equity Savings Fund",
+    "HDFC Arbitrage Fund","HDFC Liquid Fund","HDFC Short Term Debt Fund",
+    "HDFC Corporate Bond Fund","HDFC Credit Risk Debt Fund","HDFC Banking & PSU Debt Fund",
+    "HDFC Gilt Fund","HDFC Dynamic Debt Fund","HDFC Nifty 50 Index Fund",
+    "HDFC Nifty Next 50 Index Fund","HDFC Sensex Index Fund","HDFC Index Fund-Nifty 50",
+    "HDFC Multi Cap Fund","HDFC ELSS Tax Saver","HDFC Infrastructure Fund",
+    "HDFC Banking & Financial Services Fund","HDFC Dividend Yield Fund"
+  ],
+  "ICICI Prudential MF": [
+    "ICICI Pru Bluechip Fund","ICICI Pru Large & Mid Cap Fund","ICICI Pru Midcap Fund",
+    "ICICI Pru Smallcap Fund","ICICI Pru Focused Equity Fund","ICICI Pru Flexicap Fund",
+    "ICICI Pru Value Discovery Fund","ICICI Pru Balanced Advantage Fund",
+    "ICICI Pru Multi Asset Fund","ICICI Pru Equity & Debt Fund","ICICI Pru Equity Savings Fund",
+    "ICICI Pru Liquid Fund","ICICI Pru Money Market Fund","ICICI Pru Short Term Fund",
+    "ICICI Pru Corporate Bond Fund","ICICI Pru Banking & PSU Debt Fund",
+    "ICICI Pru All Seasons Bond Fund","ICICI Pru Gilt Fund","ICICI Pru Long Term Bond Fund",
+    "ICICI Pru Nifty 50 Index Fund","ICICI Pru Nifty Next 50 Index Fund",
+    "ICICI Pru Technology Fund","ICICI Pru Banking & Financial Services Fund",
+    "ICICI Pru Infrastructure Fund","ICICI Pru FMCG Fund","ICICI Pru ELSS Tax Saver",
+    "ICICI Pru Business Cycle Fund","ICICI Pru Commodities Fund"
+  ],
+  "Nippon India MF": [
+    "Nippon India Large Cap Fund","Nippon India Multi Cap Fund","Nippon India Flexi Cap Fund",
+    "Nippon India Growth Fund (Mid Cap)","Nippon India Small Cap Fund",
+    "Nippon India Value Fund","Nippon India Focused Equity Fund",
+    "Nippon India Balanced Advantage Fund","Nippon India Equity Hybrid Fund",
+    "Nippon India Arbitrage Fund","Nippon India Liquid Fund","Nippon India Money Market Fund",
+    "Nippon India Short Term Fund","Nippon India Corporate Bond Fund",
+    "Nippon India Banking & PSU Debt Fund","Nippon India Gilt Securities Fund",
+    "Nippon India Nifty 50 Index Fund","Nippon India Nifty Midcap 150 Index Fund",
+    "Nippon India ETF Nifty BeES","Nippon India ELSS Tax Saver Fund",
+    "Nippon India Banking Fund","Nippon India Pharma Fund","Nippon India Power & Infra Fund",
+    "Nippon India Consumption Fund","Nippon India US Equity Opportunites Fund"
+  ],
+  "Axis Mutual Fund": [
+    "Axis Bluechip Fund","Axis Focused Fund","Axis Flexi Cap Fund",
+    "Axis Midcap Fund","Axis Smallcap Fund","Axis Large & Mid Cap Fund",
+    "Axis Long Term Equity Fund (ELSS)","Axis Equity Hybrid Fund",
+    "Axis Balanced Advantage Fund","Axis Equity Saver Fund",
+    "Axis Liquid Fund","Axis Money Market Fund","Axis Short Term Fund",
+    "Axis Corporate Debt Fund","Axis Banking & PSU Debt Fund",
+    "Axis Dynamic Bond Fund","Axis Gilt Fund","Axis Nifty 50 Index Fund",
+    "Axis Nifty 100 Index Fund","Axis Business Cycles Fund",
+    "Axis Special Situations Fund","Axis Technology ETF","Axis Financial Services Fund"
+  ],
+  "Kotak Mutual Fund": [
+    "Kotak Flexicap Fund","Kotak Bluechip Fund","Kotak Large & Mid Cap Fund",
+    "Kotak Emerging Equity Fund (Mid Cap)","Kotak Smallcap Fund",
+    "Kotak Focused Equity Fund","Kotak Equity Opportunities Fund",
+    "Kotak Balanced Advantage Fund","Kotak Equity Hybrid Fund",
+    "Kotak Arbitrage Fund","Kotak Liquid Fund","Kotak Money Market Fund",
+    "Kotak Short Term Fund","Kotak Corporate Bond Fund","Kotak Banking & PSU Debt Fund",
+    "Kotak Bond Fund","Kotak Gilt Fund","Kotak Nifty 50 Index Fund",
+    "Kotak Nifty Next 50 Index Fund","Kotak ESG Opportunities Fund",
+    "Kotak Infrastructure & Economic Reform Fund","Kotak ELSS Tax Saver",
+    "Kotak Business Cycle Fund","Kotak Multicap Fund"
+  ],
+  "Quant Mutual Fund": [
+    "Quant Active Fund","Quant Flexi Cap Fund","Quant Mid Cap Fund",
+    "Quant Small Cap Fund","Quant Large Cap Fund","Quant Large & Mid Cap Fund",
+    "Quant ELSS Tax Saver Fund","Quant Focused Fund","Quant Value Fund",
+    "Quant Absolute Fund (Balanced)","Quant Liquid Fund","Quant Gilt Fund",
+    "Quant ESG Equity Fund","Quant Infrastructure Fund","Quant Momentum Fund",
+    "Quant Business Cycle Fund","Quant Multi Asset Fund","Quant Healthcare Fund"
+  ],
+  "DSP Mutual Fund": [
+    "DSP Flexi Cap Fund","DSP Equity Opportunities Fund","DSP Top 100 Equity Fund",
+    "DSP Midcap Fund","DSP Small Cap Fund","DSP Focus Fund",
+    "DSP Multi Asset Allocation Fund","DSP Balanced Advantage Fund",
+    "DSP Equity & Bond Fund","DSP Arbitrage Fund","DSP Liquid Fund",
+    "DSP Short Term Fund","DSP Corporate Bond Fund","DSP Banking & PSU Debt Fund",
+    "DSP Bond Fund","DSP Gilt Fund","DSP Nifty 50 Index Fund",
+    "DSP Nifty Next 50 Index Fund","DSP ELSS Tax Saver Fund",
+    "DSP Natural Resources & New Energy Fund","DSP Healthcare Fund",
+    "DSP US Flexible Equity Fund","DSP India T.I.G.E.R. Fund","DSP Quant Fund"
+  ],
+  "Mirae Asset MF": [
+    "Mirae Asset Large Cap Fund","Mirae Asset Flexi Cap Fund",
+    "Mirae Asset Emerging Bluechip Fund (Large & Mid)","Mirae Asset Midcap Fund",
+    "Mirae Asset Focused Fund","Mirae Asset Great Consumer Fund",
+    "Mirae Asset Balanced Advantage Fund","Mirae Asset Hybrid Equity Fund",
+    "Mirae Asset Equity Savings Fund","Mirae Asset Arbitrage Fund",
+    "Mirae Asset Liquid Fund","Mirae Asset Short Term Fund",
+    "Mirae Asset Corporate Bond Fund","Mirae Asset Banking & PSU Debt Fund",
+    "Mirae Asset Nifty 50 Index Fund","Mirae Asset Nifty Midcap 150 ETF",
+    "Mirae Asset ELSS Tax Saver Fund","Mirae Asset Financial Allocation Fund",
+    "Mirae Asset Healthcare Fund","Mirae Asset NYSE FANG+ ETF FOF","Mirae Asset S&P 500 Top 50 ETF FOF"
+  ],
+  "Parag Parikh MF": [
+    "Parag Parikh Flexi Cap Fund","Parag Parikh ELSS Tax Saver Fund",
+    "Parag Parikh Liquid Fund","Parag Parikh Conservative Hybrid Fund",
+    "Parag Parikh Arbitrage Fund","Parag Parikh Dynamic Asset Allocation Fund",
+    "Parag Parikh Overnight Fund","Parag Parikh Large Cap Fund"
+  ],
+  "UTI Mutual Fund": [
+    "UTI Nifty 50 Index Fund","UTI Nifty Next 50 Index Fund","UTI Flexi Cap Fund",
+    "UTI Large Cap Fund","UTI Mid Cap Fund","UTI Small Cap Fund",
+    "UTI Core Equity Fund","UTI Value Opportunities Fund","UTI Focused Fund",
+    "UTI Balanced Advantage Fund","UTI Hybrid Equity Fund","UTI Arbitrage Fund",
+    "UTI Liquid Fund","UTI Money Market Fund","UTI Short Duration Fund",
+    "UTI Corporate Bond Fund","UTI Banking & PSU Debt Fund","UTI Gilt Fund",
+    "UTI Long Duration Fund","UTI ELSS Tax Saver Fund","UTI Healthcare Fund",
+    "UTI Transportation & Logistics Fund","UTI Infrastructure Fund"
+  ],
+  "Franklin Templeton MF": [
+    "Franklin India Flexi Cap Fund","Franklin India Large Cap Fund",
+    "Franklin India Prima Fund (Mid Cap)","Franklin India Smaller Companies Fund",
+    "Franklin India Focused Equity Fund","Franklin India Equity Hybrid Fund",
+    "Franklin India Balanced Advantage Fund","Franklin India Liquid Fund",
+    "Franklin India Short Term Income Plan","Franklin India Corporate Debt Fund",
+    "Franklin India Banking & PSU Debt Fund","Franklin India Government Securities Fund",
+    "Franklin India Dynamic Accrual Fund","Franklin India ELSS Tax Saver Fund",
+    "Franklin India Technology Fund","Franklin India Opportunities Fund",
+    "Franklin India Prima Plus Fund","Franklin US Opportunities FOF"
+  ],
+  "Tata Mutual Fund": [
+    "Tata Large Cap Fund","Tata Flexi Cap Fund","Tata Large & Mid Cap Fund",
+    "Tata Midcap Growth Fund","Tata Small Cap Fund","Tata Multi Asset Opportunities Fund",
+    "Tata Balanced Advantage Fund","Tata Hybrid Equity Fund","Tata Arbitrage Fund",
+    "Tata Liquid Fund","Tata Money Market Fund","Tata Short Term Bond Fund",
+    "Tata Corporate Bond Fund","Tata Banking & PSU Debt Fund","Tata Gilt Securities Fund",
+    "Tata Nifty 50 Index Fund","Tata ELSS Tax Saver Fund","Tata Digital India Fund",
+    "Tata India Pharma & Healthcare Fund","Tata Business Cycle Fund",
+    "Tata Infrastructure Fund","Tata Resources & Energy Fund","Tata Ethical Fund"
+  ],
+  "Motilal Oswal MF": [
+    "Motilal Oswal Flexi Cap Fund","Motilal Oswal Midcap Fund",
+    "Motilal Oswal Large & Midcap Fund","Motilal Oswal Large Cap Fund",
+    "Motilal Oswal ELSS Tax Saver Fund","Motilal Oswal Nifty 50 Index Fund",
+    "Motilal Oswal Nifty Next 50 Index Fund","Motilal Oswal Nifty Midcap 150 Index Fund",
+    "Motilal Oswal Nifty Smallcap 250 Index Fund","Motilal Oswal S&P 500 Index Fund",
+    "Motilal Oswal Nasdaq 100 FOF","Motilal Oswal Multi Asset Fund",
+    "Motilal Oswal Business Cycle Fund","Motilal Oswal Focused Fund"
+  ],
+  "Aditya Birla Sun Life MF": [
+    "ABSL Flexi Cap Fund","ABSL Frontline Equity Fund (Large Cap)","ABSL Equity Advantage Fund",
+    "ABSL Pure Value Fund","ABSL Focused Equity Fund","ABSL Mid Cap Fund",
+    "ABSL Small Cap Fund","ABSL Nifty 50 Index Fund","ABSL Nifty Next 50 Index Fund",
+    "ABSL Balanced Advantage Fund","ABSL Equity Hybrid 95 Fund","ABSL Equity Savings Fund",
+    "ABSL Arbitrage Fund","ABSL Liquid Fund","ABSL Money Manager Fund",
+    "ABSL Short Term Fund","ABSL Corporate Bond Fund","ABSL Banking & PSU Debt Fund",
+    "ABSL Dynamic Bond Fund","ABSL Gilt Plus Fund","ABSL ELSS Tax Relief 96",
+    "ABSL Digital India Fund","ABSL Banking & Financial Services Fund",
+    "ABSL Healthcare Fund","ABSL Infrastructure Fund","ABSL ESG Integration Strategy Fund",
+    "ABSL Business Cycle Fund","ABSL Multi Cap Fund"
+  ],
+  "Canara Robeco MF": [
+    "Canara Robeco Flexi Cap Fund","Canara Robeco Bluechip Equity Fund",
+    "Canara Robeco Emerging Equities Fund (Large & Mid)","Canara Robeco Mid Cap Fund",
+    "Canara Robeco Small Cap Fund","Canara Robeco Equity Hybrid Fund",
+    "Canara Robeco Conservative Hybrid Fund","Canara Robeco Balanced Advantage Fund",
+    "Canara Robeco ELSS Tax Saver Fund","Canara Robeco Liquid Fund",
+    "Canara Robeco Short Duration Fund","Canara Robeco Corporate Bond Fund",
+    "Canara Robeco Gilt Fund","Canara Robeco Overnight Fund",
+    "Canara Robeco Equity Tax Saver Fund","Canara Robeco Infrastructure Fund"
+  ],
+  "Bandhan MF": [
+    "Bandhan Large Cap Fund","Bandhan Flexi Cap Fund","Bandhan Large & Mid Cap Fund",
+    "Bandhan Mid Cap Fund","Bandhan Small Cap Fund","Bandhan Focused Equity Fund",
+    "Bandhan Balanced Advantage Fund","Bandhan Equity Savings Fund","Bandhan Arbitrage Fund",
+    "Bandhan Liquid Fund","Bandhan Short Duration Fund","Bandhan Corporate Bond Fund",
+    "Bandhan Banking & PSU Debt Fund","Bandhan Gilt Fund","Bandhan ELSS Tax Saver Fund",
+    "Bandhan Infrastructure Fund","Bandhan Business Cycle Fund"
+  ],
+  "Edelweiss MF": [
+    "Edelweiss Large Cap Fund","Edelweiss Flexi Cap Fund","Edelweiss Large & Mid Cap Fund",
+    "Edelweiss Mid Cap Fund","Edelweiss Small Cap Fund","Edelweiss Multi Cap Fund",
+    "Edelweiss Balanced Advantage Fund","Edelweiss Equity Savings Fund","Edelweiss Arbitrage Fund",
+    "Edelweiss Liquid Fund","Edelweiss Short Duration Fund","Edelweiss Corporate Bond Fund",
+    "Edelweiss Banking & PSU Debt Fund","Edelweiss Gilt Fund","Edelweiss ELSS Tax Saver Fund",
+    "Edelweiss Greater China Equity Off-shore Fund","Edelweiss US Value Equity Off-shore Fund",
+    "Edelweiss MSCI India Domestic & World Healthcare 45 Index Fund"
+  ],
+  "HSBC Mutual Fund": [
+    "HSBC Large Cap Fund","HSBC Flexi Cap Fund","HSBC Large & Mid Cap Fund",
+    "HSBC Mid Cap Fund","HSBC Small Cap Fund","HSBC Focused Fund",
+    "HSBC Aggressive Hybrid Fund","HSBC Balanced Advantage Fund","HSBC Arbitrage Fund",
+    "HSBC Liquid Fund","HSBC Short Duration Fund","HSBC Corporate Bond Fund",
+    "HSBC Gilt Fund","HSBC Nifty 50 Index Fund","HSBC ELSS Tax Saver Fund",
+    "HSBC Infrastructure Fund","HSBC Brazil Fund","HSBC Global Emerging Markets Fund"
+  ],
+  "PGIM India MF": [
+    "PGIM India Large Cap Fund","PGIM India Flexi Cap Fund","PGIM India Large & Mid Cap Fund",
+    "PGIM India Midcap Opportunities Fund","PGIM India Small Cap Fund",
+    "PGIM India Balanced Advantage Fund","PGIM India Hybrid Equity Fund",
+    "PGIM India Arbitrage Fund","PGIM India Liquid Fund","PGIM India Short Duration Fund",
+    "PGIM India Corporate Bond Fund","PGIM India Banking & PSU Debt Fund",
+    "PGIM India Gilt Fund","PGIM India ELSS Tax Saver Fund",
+    "PGIM India Emerging Markets Equity Fund","PGIM India Global Equity Opportunities Fund"
+  ],
+  "Sundaram MF": [
+    "Sundaram Large Cap Fund","Sundaram Flexi Cap Fund","Sundaram Large & Mid Cap Fund",
+    "Sundaram Mid Cap Fund","Sundaram Small Cap Fund","Sundaram Multi Cap Fund",
+    "Sundaram Balanced Advantage Fund","Sundaram Hybrid Equity Fund","Sundaram Arbitrage Fund",
+    "Sundaram Liquid Fund","Sundaram Short Term Debt Fund","Sundaram Corporate Bond Fund",
+    "Sundaram Banking & PSU Debt Fund","Sundaram Gilt Fund","Sundaram ELSS Tax Saver Fund",
+    "Sundaram Financial Services Opportunities Fund","Sundaram Rural and Consumption Fund",
+    "Sundaram Infrastructure Advantage Fund","Sundaram Energy Opportunities Fund"
+  ],
+  "Invesco India MF": [
+    "Invesco India Largecap Fund","Invesco India Flexi Cap Fund","Invesco India Large & Mid Cap Fund",
+    "Invesco India Midcap Fund","Invesco India Smallcap Fund","Invesco India Focused Fund",
+    "Invesco India Contra Fund","Invesco India Balanced Advantage Fund",
+    "Invesco India Equity & Bond Fund","Invesco India Arbitrage Fund",
+    "Invesco India Liquid Fund","Invesco India Short Duration Fund",
+    "Invesco India Corporate Bond Fund","Invesco India Banking & PSU Debt Fund",
+    "Invesco India Gilt Fund","Invesco India ELSS Tax Saver Fund",
+    "Invesco India Financial Services Fund","Invesco India Infrastructure Fund",
+    "Invesco India Growth Opportunities Fund"
+  ],
+  "Navi MF": [
+    "Navi Nifty 50 Index Fund","Navi Nifty Next 50 Index Fund","Navi Nifty Midcap 150 Index Fund",
+    "Navi Nifty Smallcap 250 Index Fund","Navi US Total Stock Market FOF",
+    "Navi Nifty Bank Index Fund","Navi Large & Midcap Fund","Navi Flexi Cap Fund",
+    "Navi Regular Savings Fund","Navi Liquid Fund"
+  ],
+  "WhiteOak Capital MF": [
+    "WhiteOak Capital Large Cap Fund","WhiteOak Capital Flexi Cap Fund",
+    "WhiteOak Capital Large & Mid Cap Fund","WhiteOak Capital Mid Cap Fund",
+    "WhiteOak Capital Small Cap Fund","WhiteOak Capital Multi Cap Fund",
+    "WhiteOak Capital ELSS Tax Saver Fund","WhiteOak Capital Balanced Advantage Fund",
+    "WhiteOak Capital Overnight Fund","WhiteOak Capital Liquid Fund",
+    "WhiteOak Capital Short Duration Fund"
+  ],
+  "360 ONE MF": [
+    "360 ONE Flexicap Fund","360 ONE Large Cap Fund","360 ONE Mid Cap Fund",
+    "360 ONE Small Cap Fund","360 ONE Focused Equity Fund","360 ONE ELSS Nifty 50 Tax Saver Fund",
+    "360 ONE Arbitrage Fund","360 ONE Liquid Fund","360 ONE Short Duration Fund",
+    "360 ONE Dynamic Bond Fund","360 ONE Overnight Fund","360 ONE Multi Asset Allocation Fund"
+  ]
+};
+
+// Flatten all funds to array for search
+const ALL_FUNDS = [];
+for (const [amc, funds] of Object.entries(FUND_DB)) {
+  for (const fund of funds) {
+    ALL_FUNDS.push({ label: fund, amc });
+  }
+}
+
+/* ============================================================
+   APP STATE
+============================================================ */
+let currentSection = 1;
+const totalSections = 6;
+let selectedInvType = '';
+let fundEntries = [];
+let fundIdCounter = 0;
+
+const STEPS = [
+  { label: 'Client', icon: '1' },
+  { label: 'Inv. Type', icon: '2' },
+  { label: 'Equity', icon: '3' },
+  { label: 'Funds', icon: '4' },
+  { label: 'Notes', icon: '5' },
+  { label: 'Review', icon: '6' },
+];
+
+/* ============================================================
+   STEP INDICATOR
+============================================================ */
+function renderStepIndicator() {
+  const wrap = document.getElementById('step-indicator');
+  let html = '';
+  STEPS.forEach((s, i) => {
+    const n = i + 1;
+    const isDone = n < currentSection;
+    const isActive = n === currentSection;
+    const cls = isDone ? 'done' : (isActive ? 'active' : '');
+    html += `<div class="step-item ${cls}" id="step-item-${n}">
+      <div class="step-dot-wrap" onclick="jumpToStep(${n})">
+        <div class="step-dot ${cls}">${isDone ? '✓' : s.icon}</div>
+        <div class="step-label">${s.label}</div>
+      </div>
+    </div>`;
+    if (i < STEPS.length - 1) {
+      html += `<div class="step-connector ${isDone ? 'done' : ''}"></div>`;
+    }
+  });
+  wrap.innerHTML = html;
+}
+
+function jumpToStep(n) {
+  if (n < currentSection) {
+    goToSection(n);
+  }
+}
+
+/* ============================================================
+   PROGRESS BAR
+============================================================ */
+function updateProgress() {
+  const pct = ((currentSection - 1) / (totalSections - 1)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+/* ============================================================
+   SECTION NAV
+============================================================ */
+function goToSection(n) {
+  document.getElementById(`section-${currentSection}`).classList.remove('visible');
+  currentSection = n;
+  const card = document.getElementById(`section-${currentSection}`);
+  card.classList.add('visible');
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderStepIndicator();
+  updateProgress();
+}
+
+function goNext(fromSection) {
+  if (!validateSection(fromSection)) return;
+  // Determine which sections to show
+  const next = getNextSection(fromSection);
+  goToSection(next);
+}
+
+function goBack(fromSection) {
+  const prev = getPrevSection(fromSection);
+  goToSection(prev);
+}
+
+function getNextSection(from) {
+  if (from === 2) {
+    if (selectedInvType === 'Equity') return 3;
+    if (selectedInvType === 'Mutual Fund') return 4;
+    return 3; // Equity + MF: show equity then MF
+  }
+  if (from === 3) {
+    if (selectedInvType === 'Equity') return 5;
+    return 4;
+  }
+  return from + 1;
+}
+
+function getPrevSection(from) {
+  if (from === 4) {
+    if (selectedInvType === 'Mutual Fund') return 2;
+    return 3;
+  }
+  if (from === 5) {
+    if (selectedInvType === 'Equity') return 3;
+    return 4;
+  }
+  return from - 1;
+}
+
+/* ============================================================
+   INVESTMENT TYPE SELECTION
+============================================================ */
+function selectInvType(card, type) {
+  document.querySelectorAll('.inv-type-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedInvType = type;
+  document.getElementById('err-inv-type').classList.remove('show');
+}
+
+/* ============================================================
+   VALIDATION
+============================================================ */
+function validateSection(n) {
+  let valid = true;
+  if (n === 1) {
+    const name = document.getElementById('client-name').value.trim();
+    const advisor = document.getElementById('advisor-select').value;
+    if (!name) { showFieldError('client-name','err-client-name'); valid = false; }
+    else clearFieldError('client-name','err-client-name');
+    if (!advisor) { showFieldError('advisor-select','err-advisor'); valid = false; }
+    else {
+      clearFieldError('advisor-select','err-advisor');
+      if (advisor === 'Other') {
+        const other = document.getElementById('advisor-other').value.trim();
+        if (!other) { showFieldError('advisor-other','err-advisor-other'); valid = false; }
+        else clearFieldError('advisor-other','err-advisor-other');
+      }
+    }
+  }
+  if (n === 2) {
+    if (!selectedInvType) {
+      document.getElementById('err-inv-type').classList.add('show');
+      valid = false;
+    }
+  }
+  if (n === 3) {
+    if (selectedInvType !== 'Mutual Fund') {
+      const amt = document.getElementById('equity-amount').value;
+      if (!amt || Number(amt) <= 0) {
+        showFieldError('equity-amount','err-equity-amount');
+        valid = false;
+      } else clearFieldError('equity-amount','err-equity-amount');
+    }
+  }
+  if (n === 4) {
+    // Validate each fund entry
+    fundEntries.forEach(entry => {
+      if (!entry.mode) {
+        showToast('Please select a transaction mode for all fund entries.', 'warning');
+        valid = false;
+      }
+    });
+  }
+  if (!valid) {
+    if (n === 1 || n === 3) showToast('Please fill all required fields.', 'error');
+  }
+  return valid;
+}
+
+function showFieldError(fieldId, errId) {
+  const el = document.getElementById(fieldId);
+  const err = document.getElementById(errId);
+  if (el) { el.classList.add('error'); }
+  if (err) { err.classList.add('show'); }
+}
+function clearFieldError(fieldId, errId) {
+  const el = document.getElementById(fieldId);
+  const err = document.getElementById(errId);
+  if (el) el.classList.remove('error');
+  if (err) err.classList.remove('show');
+}
+
+/* ============================================================
+   ADVISOR "OTHER" TOGGLE
+============================================================ */
+document.getElementById('advisor-select').addEventListener('change', function() {
+  const wrap = document.getElementById('advisor-other-wrap');
+  clearFieldError('advisor-select','err-advisor');
+  if (this.value === 'Other') {
+    wrap.classList.add('show');
+  } else {
+    wrap.classList.remove('show');
+  }
+});
+
+/* ============================================================
+   CHARACTER COUNTER
+============================================================ */
+function updateCounter(el, counterId, max) {
+  const len = el.value.length;
+  const counter = document.getElementById(counterId);
+  counter.textContent = `${len} / ${max}`;
+  counter.className = 'char-counter';
+  if (len > max * 0.85) counter.classList.add('warn');
+  if (len >= max) counter.classList.add('over');
+}
+
+/* ============================================================
+   FUND ENTRY SYSTEM
+============================================================ */
+const TRANSACTION_MODES = [
+  'SIP','STP','SWP','Switch','Lumpsum','Redemption',
+  'SIP Stop','SWP Stop','STP Stop','Rejig SIP','Redeploy','None'
+];
+const TIME_HORIZONS = ['Short — <3 yrs','Medium — 3–7 yrs','Long — 7+ yrs','None'];
+const RISK_PROFILES = ['Conservative','Moderate','Aggressive','None'];
+const OBJECTIVES = ['Growth','Stable','Income','Rebalancing','Tax Saving','Wealth Creation','Capital Preservation','Passive Income','Other','None'];
+const GOALS_LIST = ['Retirement','Education','Marriage','Vacation','General','Home','Vehicle','Emergency Fund','Business','Foreign Trip','Child Future','Other','None'];
+const WHY_FUND_LIST = ['Performance-Based','Risk & Stability','Portfolio Fit','Cost & Efficiency','Fund Quality & Management','Strategy / Theme-Based','Tactical / Situational','Other','None'];
+
+const SOURCE_TARGET_MODES = ['STP','SWP','Switch'];
+
+function addFundEntry() {
+  fundIdCounter++;
+  const id = fundIdCounter;
+  const entry = { id, mode: '', sourceFund: '', targetFund: '', fundName: '', amount: '', timeHorizon: '', riskProfile: '', objective: '', objectiveOther: '', goals: [], goalOther: '', whyFund: [], whyFundOther: '' };
+  fundEntries.push(entry);
+  document.getElementById('fund-empty-msg').style.display = 'none';
+  const wrap = document.getElementById('fund-entries-wrap');
+  const div = document.createElement('div');
+  div.id = `fund-card-${id}`;
+  div.className = 'fund-card';
+  div.innerHTML = buildFundCardHTML(id, entry);
+  wrap.appendChild(div);
+  // Bind events
+  bindFundCardEvents(id);
+  rippleSetup();
+  showToast(`Fund Entry #${id} added.`, 'success');
+}
+
+function buildFundCardHTML(id, entry) {
+  const modeChips = TRANSACTION_MODES.map(m =>
+    `<div class="mode-chip ${entry.mode===m?'selected':''}" data-fund="${id}" data-mode="${m}" onclick="selectMode(${id},'${m}')">${m}</div>`
+  ).join('');
+  return `
+    <div class="fund-card-header">
+      <div class="fund-card-num">Fund Entry #${id}</div>
+      <div class="fund-mode-badge" id="mode-badge-${id}">${entry.mode || 'Mode Not Selected'}</div>
+      <button class="fund-remove-btn" onclick="removeFundEntry(${id})">✕ Remove</button>
+    </div>
+    <div class="fund-card-body">
+      <div class="section-sep">Transaction Mode</div>
+      <div class="mode-chips-wrap">${modeChips}</div>
+      <div id="fund-fields-${id}">
+        <!-- Dynamic fund fields injected after mode selection -->
+        <div style="text-align:center;padding:16px 0;color:var(--text-muted);font-size:0.82rem;">Select a transaction mode to reveal fund fields.</div>
+      </div>
+    </div>`;
+}
+
+function selectMode(id, mode) {
+  const entry = fundEntries.find(e => e.id === id);
+  if (!entry) return;
+  entry.mode = mode;
+  // Update chips
+  document.querySelectorAll(`.mode-chip[data-fund="${id}"]`).forEach(c => {
+    c.classList.toggle('selected', c.dataset.mode === mode);
+  });
+  document.getElementById(`mode-badge-${id}`).textContent = mode;
+  // Rebuild dynamic fields
+  renderFundFields(id);
+  bindFundCardEvents(id);
+}
+
+function renderFundFields(id) {
+  const entry = fundEntries.find(e => e.id === id);
+  if (!entry || !entry.mode) return;
+  const isDual = SOURCE_TARGET_MODES.includes(entry.mode);
+  const html = `
+    <div class="divider" style="margin:12px 0"></div>
+    <div class="fund-fields-grid">
+      ${isDual ? `
+        <div class="form-group">
+          <label class="form-label">Source Fund</label>
+          <div class="searchable-dd-wrap" id="dd-src-wrap-${id}">
+            <div class="searchable-dd-input-wrap">
+              <button type="button" class="searchable-dd-trigger placeholder" id="dd-src-trigger-${id}" onclick="toggleDD('dd-src-${id}')">Select Source Fund…</button>
+              <div class="dd-arrow"></div>
+            </div>
+            <div class="searchable-dd-panel" id="dd-src-${id}">
+              <div class="dd-search-box"><input class="dd-search-input" placeholder="Search funds…" oninput="filterDD(this,'dd-src-list-${id}')" id="dd-src-search-${id}"/></div>
+              <div class="dd-list" id="dd-src-list-${id}">${buildDDItems('dd-src-${id}','src',id)}</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Fund</label>
+          <div class="searchable-dd-wrap" id="dd-tgt-wrap-${id}">
+            <div class="searchable-dd-input-wrap">
+              <button type="button" class="searchable-dd-trigger placeholder" id="dd-tgt-trigger-${id}" onclick="toggleDD('dd-tgt-${id}')">Select Target Fund…</button>
+              <div class="dd-arrow"></div>
+            </div>
+            <div class="searchable-dd-panel" id="dd-tgt-${id}">
+              <div class="dd-search-box"><input class="dd-search-input" placeholder="Search funds…" oninput="filterDD(this,'dd-tgt-list-${id}')" id="dd-tgt-search-${id}"/></div>
+              <div class="dd-list" id="dd-tgt-list-${id}">${buildDDItems('dd-tgt-${id}','tgt',id)}</div>
+            </div>
+          </div>
+        </div>
+      ` : `
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Fund Name</label>
+          <div class="searchable-dd-wrap" id="dd-fund-wrap-${id}">
+            <div class="searchable-dd-input-wrap">
+              <button type="button" class="searchable-dd-trigger placeholder" id="dd-fund-trigger-${id}" onclick="toggleDD('dd-fund-${id}')">Select Fund…</button>
+              <div class="dd-arrow"></div>
+            </div>
+            <div class="searchable-dd-panel" id="dd-fund-${id}">
+              <div class="dd-search-box"><input class="dd-search-input" placeholder="Search mutual funds…" oninput="filterDD(this,'dd-fund-list-${id}')" id="dd-fund-search-${id}"/></div>
+              <div class="dd-list" id="dd-fund-list-${id}">${buildDDItems('dd-fund-${id}','fund',id)}</div>
+            </div>
+          </div>
+        </div>
+      `}
+      <div class="form-group">
+        <label class="form-label">Amount (₹)</label>
+        <div class="amount-wrap">
+          <span class="amount-prefix">₹</span>
+          <input class="form-input" id="fund-amount-${id}" type="number" min="0" placeholder="0.00"
+            oninput="updateEntryField(${id},'amount',this.value)"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Time Horizon</label>
+        <div class="select-wrap">
+          <select class="form-select" id="fund-horizon-${id}" onchange="updateEntryField(${id},'timeHorizon',this.value)">
+            <option value="">— Select —</option>
+            ${TIME_HORIZONS.map(h=>`<option value="${h}">${h}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Risk Profile</label>
+        <div class="select-wrap">
+          <select class="form-select" id="fund-risk-${id}" onchange="updateEntryField(${id},'riskProfile',this.value)">
+            <option value="">— Select —</option>
+            ${RISK_PROFILES.map(r=>`<option value="${r}">${r}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Objective</label>
+        <div class="select-wrap">
+          <select class="form-select" id="fund-obj-${id}" onchange="handleObjectiveChange(${id},this.value)">
+            <option value="">— Select —</option>
+            ${OBJECTIVES.map(o=>`<option value="${o}">${o}</option>`).join('')}
+          </select>
+        </div>
+        <div class="animated-field" id="obj-other-wrap-${id}">
+          <div class="form-group" style="margin-top:10px">
+            <input class="form-input" id="fund-obj-other-${id}" type="text" placeholder="Please specify objective"
+              oninput="updateEntryField(${id},'objectiveOther',this.value)"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Goals -->
+    <div class="section-sep" style="margin-top:18px">Goals</div>
+    <div class="multi-chips-wrap" id="goals-chips-${id}">
+      ${GOALS_LIST.map(g=>`<div class="multi-chip${g==='None'?' none-chip':''}" data-fund="${id}" data-goal="${g}" onclick="toggleGoal(${id},'${g}')">${g}</div>`).join('')}
+    </div>
+    <div class="animated-field" id="goal-other-wrap-${id}" style="margin-top:10px">
+      <input class="form-input" id="fund-goal-other-${id}" type="text" placeholder="Please specify goal"
+        oninput="updateEntryField(${id},'goalOther',this.value)"/>
+    </div>
+    <!-- Why This Fund -->
+    <div class="section-sep" style="margin-top:18px">Why This Fund</div>
+    <div class="multi-chips-wrap" id="why-chips-${id}">
+      ${WHY_FUND_LIST.map(w=>`<div class="multi-chip${w==='None'?' none-chip':''}" data-fund="${id}" data-why="${w}" onclick="toggleWhy(${id},'${w}')">${w}</div>`).join('')}
+    </div>
+    <div class="animated-field" id="why-other-wrap-${id}" style="margin-top:10px">
+      <input class="form-input" id="fund-why-other-${id}" type="text" placeholder="Please specify reason"
+        oninput="updateEntryField(${id},'whyFundOther',this.value)"/>
+    </div>
+  `;
+  document.getElementById(`fund-fields-${id}`).innerHTML = html;
+}
+
+function buildDDItems(ddId, type, fundId) {
+  let html = '';
+  for (const [amc, funds] of Object.entries(FUND_DB)) {
+    html += `<div class="dd-item-cat">${amc}</div>`;
+    funds.forEach(f => {
+      html += `<div class="dd-item" data-label="${f}" onclick="selectDDItem('${ddId}','${type}',${fundId},'${f.replace(/'/g,"\\'")}','${amc}')">${f}</div>`;
+    });
+  }
+  return html;
+}
+
+function toggleDD(ddId) {
+  const panel = document.getElementById(ddId);
+  const trigger = document.getElementById(ddId.replace('dd-','').replace(/-(\d+)$/, '') + '-trigger-$1');
+  // Close all others
+  document.querySelectorAll('.searchable-dd-panel.open').forEach(p => {
+    if (p.id !== ddId) {
+      p.classList.remove('open');
+      const t = p.closest('.searchable-dd-wrap')?.querySelector('.searchable-dd-trigger');
+      if (t) t.classList.remove('open');
+    }
+  });
+  panel.classList.toggle('open');
+  // Find trigger
+  const t = panel.closest('.searchable-dd-wrap')?.querySelector('.searchable-dd-trigger');
+  if (t) t.classList.toggle('open', panel.classList.contains('open'));
+  if (panel.classList.contains('open')) {
+    const inp = panel.querySelector('.dd-search-input');
+    if (inp) setTimeout(() => inp.focus(), 50);
+  }
+}
+
+function filterDD(input, listId) {
+  const query = input.value.toLowerCase().trim();
+  const list = document.getElementById(listId);
+  if (!list) return;
+  const items = list.querySelectorAll('.dd-item');
+  const cats = list.querySelectorAll('.dd-item-cat');
+  let visibleCount = 0;
+  const catVisible = {};
+  items.forEach(item => {
+    const label = item.dataset.label?.toLowerCase() || '';
+    const matches = !query || label.includes(query);
+    item.style.display = matches ? '' : 'none';
+    if (matches) {
+      visibleCount++;
+      // highlight
+      if (query) {
+        const idx = label.indexOf(query);
+        const orig = item.dataset.label;
+        item.innerHTML = orig.substring(0,idx) + `<span class="highlight">${orig.substring(idx,idx+query.length)}</span>` + orig.substring(idx+query.length);
+      } else {
+        item.innerHTML = item.dataset.label;
+      }
+      // track cat
+      let prev = item.previousElementSibling;
+      while (prev && !prev.classList.contains('dd-item-cat')) prev = prev.previousElementSibling;
+      if (prev) catVisible[prev.textContent] = true;
+    }
+  });
+  cats.forEach(cat => {
+    cat.style.display = catVisible[cat.textContent] ? '' : 'none';
+  });
+  // empty state
+  let emptyEl = list.querySelector('.dd-empty');
+  if (visibleCount === 0) {
+    if (!emptyEl) {
+      emptyEl = document.createElement('div');
+      emptyEl.className = 'dd-empty';
+      emptyEl.textContent = 'No funds found.';
+      list.appendChild(emptyEl);
+    }
+    emptyEl.style.display = '';
+  } else {
+    if (emptyEl) emptyEl.style.display = 'none';
+  }
+}
+
+function selectDDItem(ddId, type, fundId, fundName, amc) {
+  const entry = fundEntries.find(e => e.id === fundId);
+  if (!entry) return;
+  if (type === 'src') entry.sourceFund = fundName;
+  else if (type === 'tgt') entry.targetFund = fundName;
+  else entry.fundName = fundName;
+  // Update trigger button
+  const triggerMap = {
+    src: `dd-src-trigger-${fundId}`,
+    tgt: `dd-tgt-trigger-${fundId}`,
+    fund: `dd-fund-trigger-${fundId}`
+  };
+  const trigger = document.getElementById(triggerMap[type]);
+  if (trigger) {
+    trigger.textContent = fundName;
+    trigger.classList.remove('placeholder','open');
+  }
+  // Close panel
+  const panel = document.getElementById(ddId);
+  if (panel) panel.classList.remove('open');
+}
+
+function updateEntryField(id, field, val) {
+  const entry = fundEntries.find(e => e.id === id);
+  if (entry) entry[field] = val;
+}
+
+function handleObjectiveChange(id, val) {
+  updateEntryField(id, 'objective', val);
+  const wrap = document.getElementById(`obj-other-wrap-${id}`);
+  if (wrap) {
+    if (val === 'Other') wrap.classList.add('show');
+    else wrap.classList.remove('show');
+  }
+}
+
+function toggleGoal(id, goal) {
+  const entry = fundEntries.find(e => e.id === id);
+  if (!entry) return;
+  if (goal === 'None') {
+    entry.goals = ['None'];
+    document.querySelectorAll(`[data-fund="${id}"][data-goal]`).forEach(c => c.classList.remove('selected'));
+    document.querySelector(`[data-fund="${id}"][data-goal="None"]`)?.classList.add('selected');
+    document.getElementById(`goal-other-wrap-${id}`)?.classList.remove('show');
+    return;
+  }
+  // Remove None if present
+  entry.goals = entry.goals.filter(g => g !== 'None');
+  document.querySelector(`[data-fund="${id}"][data-goal="None"]`)?.classList.remove('selected');
+  const idx = entry.goals.indexOf(goal);
+  if (idx === -1) entry.goals.push(goal);
+  else entry.goals.splice(idx, 1);
+  document.querySelector(`[data-fund="${id}"][data-goal="${goal}"]`)?.classList.toggle('selected', entry.goals.includes(goal));
+  // Other
+  const otherWrap = document.getElementById(`goal-other-wrap-${id}`);
+  if (otherWrap) {
+    if (entry.goals.includes('Other')) otherWrap.classList.add('show');
+    else otherWrap.classList.remove('show');
+  }
+}
+
+function toggleWhy(id, why) {
+  const entry = fundEntries.find(e => e.id === id);
+  if (!entry) return;
+  if (why === 'None') {
+    entry.whyFund = ['None'];
+    document.querySelectorAll(`[data-fund="${id}"][data-why]`).forEach(c => c.classList.remove('selected'));
+    document.querySelector(`[data-fund="${id}"][data-why="None"]`)?.classList.add('selected');
+    document.getElementById(`why-other-wrap-${id}`)?.classList.remove('show');
+    return;
+  }
+  entry.whyFund = entry.whyFund.filter(w => w !== 'None');
+  document.querySelector(`[data-fund="${id}"][data-why="None"]`)?.classList.remove('selected');
+  const idx = entry.whyFund.indexOf(why);
+  if (idx === -1) entry.whyFund.push(why);
+  else entry.whyFund.splice(idx, 1);
+  document.querySelector(`[data-fund="${id}"][data-why="${why}"]`)?.classList.toggle('selected', entry.whyFund.includes(why));
+  const otherWrap = document.getElementById(`why-other-wrap-${id}`);
+  if (otherWrap) {
+    if (entry.whyFund.includes('Other')) otherWrap.classList.add('show');
+    else otherWrap.classList.remove('show');
+  }
+}
+
+function removeFundEntry(id) {
+  fundEntries = fundEntries.filter(e => e.id !== id);
+  const card = document.getElementById(`fund-card-${id}`);
+  if (card) {
+    card.style.transition = 'opacity 0.25s, transform 0.25s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => card.remove(), 250);
+  }
+  if (fundEntries.length === 0) document.getElementById('fund-empty-msg').style.display = '';
+  showToast(`Fund Entry #${id} removed.`, 'warning');
+}
+
+function bindFundCardEvents(id) {
+  // Close dropdowns on outside click — handled globally
+}
+
+/* ============================================================
+   CLOSE DROPDOWNS ON OUTSIDE CLICK
+============================================================ */
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.searchable-dd-wrap')) {
+    document.querySelectorAll('.searchable-dd-panel.open').forEach(p => {
+      p.classList.remove('open');
+      const t = p.closest('.searchable-dd-wrap')?.querySelector('.searchable-dd-trigger');
+      if (t) t.classList.remove('open');
+    });
+  }
+});
+
+/* ============================================================
+   REVIEW SECTION
+============================================================ */
+function buildReview() {
+  const clientName = document.getElementById('client-name').value.trim();
+  const advisorRaw = document.getElementById('advisor-select').value;
+  const advisor = advisorRaw === 'Other' ? document.getElementById('advisor-other').value.trim() : advisorRaw;
+  const equityAmt = document.getElementById('equity-amount').value;
+  const equityNotes = document.getElementById('equity-notes').value.trim();
+  const proposalNotes = document.getElementById('proposal-notes').value.trim();
+
+  let html = '';
+
+  // Client details
+  html += `<div class="review-block">
+    <div class="review-block-title">Client Details</div>
+    <div class="review-row"><div class="review-key">Client Name</div><div class="review-val gold">${clientName || '—'}</div></div>
+    <div class="review-row"><div class="review-key">Advisor</div><div class="review-val">${advisor || '—'}</div></div>
+    <div class="review-row"><div class="review-key">Investment Type</div><div class="review-val">${selectedInvType || '—'}</div></div>
+  </div>`;
+
+  // Equity details
+  if (selectedInvType === 'Equity' || selectedInvType === 'Equity + Mutual Fund') {
+    html += `<div class="review-block">
+      <div class="review-block-title">Equity Details</div>
+      <div class="review-row"><div class="review-key">Equity Amount</div><div class="review-val gold">₹${Number(equityAmt).toLocaleString('en-IN') || '—'}</div></div>
+      <div class="review-row"><div class="review-key">Equity Notes</div><div class="review-val">${equityNotes || '—'}</div></div>
+    </div>`;
+  }
+
+  // Fund entries
+  if (fundEntries.length > 0) {
+    html += `<div class="review-block"><div class="review-block-title">Mutual Fund Summary (${fundEntries.length} ${fundEntries.length===1?'Entry':'Entries'})</div>`;
+    fundEntries.forEach((entry, i) => {
+      const fundDisplay = SOURCE_TARGET_MODES.includes(entry.mode)
+        ? `${entry.sourceFund || '—'} → ${entry.targetFund || '—'}`
+        : (entry.fundName || '—');
+      html += `<div class="fund-review-card">
+        <div class="fund-review-header">
+          <div class="fund-review-num">Fund #${i+1}</div>
+          <div class="fund-mode-badge">${entry.mode || 'N/A'}</div>
+        </div>
+        ${SOURCE_TARGET_MODES.includes(entry.mode) ? `
+          <div class="review-row"><div class="review-key">Source Fund</div><div class="review-val">${entry.sourceFund || '—'}</div></div>
+          <div class="review-row"><div class="review-key">Target Fund</div><div class="review-val">${entry.targetFund || '—'}</div></div>
+        ` : `
+          <div class="review-row"><div class="review-key">Fund Name</div><div class="review-val">${entry.fundName || '—'}</div></div>
+        `}
+        <div class="review-row"><div class="review-key">Amount</div><div class="review-val gold">${entry.amount ? '₹' + Number(entry.amount).toLocaleString('en-IN') : '—'}</div></div>
+        <div class="review-row"><div class="review-key">Time Horizon</div><div class="review-val">${entry.timeHorizon || '—'}</div></div>
+        <div class="review-row"><div class="review-key">Risk Profile</div><div class="review-val">${entry.riskProfile || '—'}</div></div>
+        <div class="review-row"><div class="review-key">Objective</div><div class="review-val">${entry.objective === 'Other' ? entry.objectiveOther || 'Other' : entry.objective || '—'}</div></div>
+        <div class="review-row"><div class="review-key">Goals</div><div class="review-val">
+          <div class="tag-list">${entry.goals.length ? entry.goals.map(g => g === 'Other' ? `<span class="tag">${entry.goalOther || 'Other'}</span>` : `<span class="tag">${g}</span>`).join('') : '<span style="color:var(--text-muted)">—</span>'}
+          </div>
+        </div></div>
+        <div class="review-row"><div class="review-key">Why This Fund</div><div class="review-val">
+          <div class="tag-list">${entry.whyFund.length ? entry.whyFund.map(w => w === 'Other' ? `<span class="tag">${entry.whyFundOther || 'Other'}</span>` : `<span class="tag">${w}</span>`).join('') : '<span style="color:var(--text-muted)">—</span>'}
+          </div>
+        </div></div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // Notes
+  if (proposalNotes) {
+    html += `<div class="review-block">
+      <div class="review-block-title">Proposal Notes</div>
+      <div class="review-row"><div class="review-val">${proposalNotes}</div></div>
+    </div>`;
+  }
+
+  // AI Reasoning
+  html += buildReasoning(clientName, advisor, equityAmt, equityNotes);
+
+  document.getElementById('review-content').innerHTML = html;
+}
+
+/* ============================================================
+   ADVISORY REASONING ENGINE
+============================================================ */
+function buildReasoning(clientName, advisor, equityAmt, equityNotes) {
+  const reasoningParts = [];
+
+  // Overall profile summary
+  if (selectedInvType) {
+    const typeMap = {
+      'Equity': 'a pure equity-oriented',
+      'Mutual Fund': 'a mutual fund-focused',
+      'Equity + Mutual Fund': 'a blended equity and mutual fund'
+    };
+    reasoningParts.push(`This proposal presents ${typeMap[selectedInvType] || 'an'} investment recommendation for <strong>${clientName || 'the client'}</strong>, structured and reviewed by advisor <strong>${advisor || '—'}</strong>.`);
+  }
+
+  if ((selectedInvType === 'Equity' || selectedInvType === 'Equity + Mutual Fund') && equityAmt) {
+    reasoningParts.push(`The equity allocation of <strong>₹${Number(equityAmt).toLocaleString('en-IN')}</strong> reflects a direct market participation strategy${equityNotes ? ', with special advisory context: ' + equityNotes : ', aligned with the client\'s market outlook and risk appetite'}.`);
+  }
+
+  let fundReasoningHTML = '';
+  fundEntries.forEach((entry, i) => {
+    const riskMap = {
+      Conservative: 'conservative, capital-preservation oriented',
+      Moderate: 'balanced, moderate-risk',
+      Aggressive: 'high-conviction, growth-seeking'
+    };
+    const horizonMap = {
+      'Short — <3 yrs': 'a short-term window of under three years',
+      'Medium — 3–7 yrs': 'a medium-term window of 3–7 years',
+      'Long — 7+ yrs': 'a long-term compounding horizon of 7+ years'
+    };
+    const risk = riskMap[entry.riskProfile] || 'risk-aware';
+    const horizon = horizonMap[entry.timeHorizon] || 'the defined investment horizon';
+    const obj = entry.objective === 'Other' ? (entry.objectiveOther || 'a specific objective') : (entry.objective || 'the stated objective');
+    const goalStr = entry.goals.filter(g => g !== 'None').map(g => g === 'Other' ? (entry.goalOther || 'other goals') : g).join(', ');
+    const whyStr = entry.whyFund.filter(w => w !== 'None').map(w => w === 'Other' ? (entry.whyFundOther || 'other reasons') : w).join(', ');
+    const fundLabel = SOURCE_TARGET_MODES.includes(entry.mode)
+      ? `${entry.sourceFund || 'the source fund'} → ${entry.targetFund || 'the target fund'}`
+      : (entry.fundName || 'the selected fund');
+
+    const modeContext = {
+      SIP: 'regular systematic investment plan',
+      Lumpsum: 'one-time lump sum deployment',
+      SWP: 'systematic withdrawal for income generation',
+      STP: 'systematic transfer to rebalance allocation',
+      Switch: 'fund switch to optimize portfolio positioning',
+      Redemption: 'redemption for liquidity or goal fulfilment',
+      'SIP Stop': 'discontinuation of existing SIP mandate',
+      'SWP Stop': 'discontinuation of systematic withdrawal plan',
+      'STP Stop': 'halt of systematic transfer plan',
+      'Rejig SIP': 'SIP rejig to align with revised strategy',
+      Redeploy: 'capital redeployment to higher-conviction opportunity',
+      None: 'transaction'
+    };
+    const modeDesc = modeContext[entry.mode] || 'transaction';
+
+    let reasoning = `Fund #${i+1} — A ${risk} ${modeDesc} into <em>${fundLabel}</em>`;
+    if (entry.timeHorizon && entry.timeHorizon !== 'None') reasoning += ` is recommended over ${horizon}`;
+    if (obj && obj !== 'None') reasoning += `, targeting ${obj.toLowerCase()}`;
+    if (goalStr) reasoning += `. This serves the client's ${goalStr.toLowerCase()} goals`;
+    if (whyStr) reasoning += `, selected based on ${whyStr.toLowerCase()}`;
+    reasoning += '.';
+
+    fundReasoningHTML += `<div class="reasoning-fund-item">${reasoning}</div>`;
+  });
+
+  const overallClose = `The overall proposal has been constructed to deliver a cohesive, goal-aligned investment strategy consistent with best-in-class institutional advisory standards.`;
+
+  return `<div class="reasoning-card">
+    <div class="reasoning-card-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1M6.33 5.33l.71.71M3 12h1M20 12h1M16.96 6.04l.71-.71M18 17a6 6 0 00-12 0"/></svg>
+      Advisory Reasoning — Auto Generated
+    </div>
+    <div class="reasoning-text">
+      ${reasoningParts.map(p => `<p style="margin-bottom:10px">${p}</p>`).join('')}
+      ${fundReasoningHTML}
+      <p style="margin-top:10px;color:var(--text-muted);font-size:0.8rem">${overallClose}</p>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   SUBMIT PROPOSAL
+============================================================ */
+async function submitProposal() {
+  const clientName = document.getElementById('client-name').value.trim();
+  const advisorRaw = document.getElementById('advisor-select').value;
+  const advisor = advisorRaw === 'Other'
+    ? document.getElementById('advisor-other').value.trim()
+    : advisorRaw;
+
+  const equityAmt = document.getElementById('equity-amount').value;
+  const equityNotes = document.getElementById('equity-notes').value.trim();
+  const proposalNotes = document.getElementById('proposal-notes').value.trim();
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    clientName,
+    advisor,
+    investmentType: selectedInvType,
+    equityAmount: equityAmt || "",
+    equityNotes,
+    funds: fundEntries.map(e => ({
+      mode: e.mode,
+      fundName: e.fundName,
+      sourceFund: e.sourceFund,
+      targetFund: e.targetFund,
+      amount: e.amount,
+      timeHorizon: e.timeHorizon,
+      riskProfile: e.riskProfile,
+      objective: e.objective === 'Other' ? e.objectiveOther : e.objective,
+      goals: e.goals.map(g => g === 'Other' ? e.goalOther : g).join(", "),
+      whyFund: e.whyFund.map(w => w === 'Other' ? e.whyFundOther : w).join(", ")
+    })),
+    proposalNotes,
+    generatedReasoning: document.querySelector('.reasoning-text')?.innerText || ""
+  };
+
+  console.log("Submitting Payload:", payload);
+
+  document.getElementById('spinner').classList.add('show');
+  document.getElementById('submit-btn').disabled = true;
+
+  try {
+
+    const response = await fetch(GOOGLE_SHEETS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    console.log("HTTP Status:", response.status);
+
+    const result = await response.text();
+    console.log("Apps Script Response:", result);
+
+    if (!response.ok) {
+      throw new Error("Server returned HTTP " + response.status);
+    }
+
+    document.getElementById('spinner').classList.remove('show');
+    document.getElementById('submit-btn').disabled = false;
+
+    showSuccessState();
+    showToast("Proposal submitted successfully!", "success");
+
+  } catch (err) {
+
+    console.error("Submission Error:", err);
+
+    document.getElementById('spinner').classList.remove('show');
+    document.getElementById('submit-btn').disabled = false;
+
+    showToast("Submission Failed: " + err.message, "error");
+  }
+}
+
+function showSuccessState() {
+  document.getElementById('review-content').style.display = 'none';
+  document.querySelector('.section-nav:last-of-type').style.display = 'none';
+  document.getElementById('success-wrap').classList.add('show');
+  document.getElementById('progress-bar').style.width = '100%';
+}
+
+function resetAll() {
+  location.reload();
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+============================================================ */
+function showToast(msg, type = 'info') {
+  const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span class="toast-icon">${icons[type]||'ℹ️'}</span><span class="toast-msg">${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('out');
+    setTimeout(() => toast.remove(), 320);
+  }, 3500);
+}
+
+/* ============================================================
+   RIPPLE EFFECT
+============================================================ */
+function rippleSetup() {
+  document.querySelectorAll('.btn:not([data-ripple])').forEach(btn => {
+    btn.setAttribute('data-ripple', '1');
+    btn.addEventListener('click', function(e) {
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+  });
+}
+
+/* ============================================================
+   SECTION TRANSITION OVERRIDE FOR SECTION 6
+============================================================ */
+const _origGoToSection = goToSection;
+// Override goNext to also build review on section 6
+const _origGoNext = goNext;
+function goNext(fromSection) {
+  if (!validateSection(fromSection)) return;
+  const next = getNextSection(fromSection);
+  goToSection(next);
+  if (next === 6) {
+    buildReview();
+  }
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+function init() {
+  renderStepIndicator();
+  updateProgress();
+  rippleSetup();
+  // Section 3 & 4 shown based on type
+  // Pre-add one fund entry hint
+}
+
+init();
+</script>
+</body>
+</html>
